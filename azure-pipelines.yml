@@ -18,7 +18,7 @@ steps:
   displayName: 'Restore NuGet packages'
   inputs:
     command: 'restore'
-    solution: '**/*.sln'
+    solution: 'Library4Lab4Q1.sln'
 
 - task: VSBuild@1
   displayName: 'Build solution'
@@ -30,7 +30,7 @@ steps:
   displayName: 'Create NuGet package'
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.csproj'
+    packagesToPack: 'StringLibrary/StringLibrary.csproj'
     version: '1.0.0'
 
 - task: NuGetAuthenticate@1
