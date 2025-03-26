@@ -31,7 +31,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    versioningScheme: 'byBuildNumber'
+    version: '1.0.0'
 
 - task: NuGetAuthenticate@1
   displayName: 'Authenticate with Azure Artifacts'
