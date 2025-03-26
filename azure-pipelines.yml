@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: windows-latest
+  name: 'COMP367-Windows'
 
 steps:
 - task: UseDotNet@2
