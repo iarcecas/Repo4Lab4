@@ -4,6 +4,14 @@ trigger:
 pool:
   name: 'COMP367-Windows' 
 
+variables:
+  buildConfiguration: 'Release'
+  majorVersion: '1'
+  minorVersion: '0'
+  patchVersion: '0'
+  versionSuffix: ''
+  packageVersion: '$(majorVersion).$(minorVersion).$(patchVersion)$(versionSuffix)'
+
 steps:
 - task: UseDotNet@2
   displayName: 'Use .NET 8.x'
@@ -14,25 +22,33 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
 
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate with Azure Artifacts'
+
 - task: NuGetCommand@2
   displayName: 'Restore NuGet packages'
   inputs:
     command: 'restore'
     solution: 'Library4Lab4Q1.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config' # Add this if you have a custom nuget.config
 
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
     solution: 'Library4Lab4Q1.sln'
-    msbuildArgs: '/p:Configuration=Release'
+    msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+    platform: 'Any CPU'
 
-- task: DotNetCoreCLI@2 # Changed from NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'Create NuGet package'
   inputs:
     command: 'pack'
-    projects: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
-    versioningSource: 'userSpecified'
-    version: '1.0.0'
+    packagesToPack: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
+    configuration: '$(buildConfiguration)'
+    versioningScheme: 'byBuildNumber' # Or keep 'userSpecified' if you prefer
+    packageVersion: '$(packageVersion)'
+    outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
   displayName: 'Publish NuGet package'
@@ -42,3 +58,4 @@ steps:
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Feed4Lab4'
     allowPackageConflicts: true
+    verbosityPush: 'Detailed' # Helps with debugging
