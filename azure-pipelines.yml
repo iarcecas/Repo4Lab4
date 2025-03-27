@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: 'COMP367-Windows' 
+  name: 'COMP367-Windows'
 
 variables:
   buildConfiguration: 'Release'
@@ -11,16 +11,18 @@ variables:
   patchVersion: '0'
   versionSuffix: ''
   packageVersion: '$(majorVersion).$(minorVersion).$(patchVersion)$(versionSuffix)'
+  dotnetVersion: '8.0.100' # Explicitly specify the .NET 8 SDK version
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET 8.x'
+  displayName: 'Install .NET 8 SDK'
   inputs:
-    packageType: SDK
-    version: '8.x'
+    packageType: 'sdk'
+    version: '$(dotnetVersion)'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: NuGetToolInstaller@1
-  displayName: 'Use NuGet'
+  displayName: 'Install NuGet'
 
 - task: NuGetAuthenticate@1
   displayName: 'Authenticate with Azure Artifacts'
@@ -31,13 +33,13 @@ steps:
     command: 'restore'
     solution: 'Library4Lab4Q1.sln'
     feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config' # Add this if you have a custom nuget.config
+    nugetConfigPath: 'nuget.config'
 
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
     solution: 'Library4Lab4Q1.sln'
-    msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+    msbuildArgs: '/p:Configuration=$(buildConfiguration) /p:TargetFramework=net8.0'
     platform: 'Any CPU'
 
 - task: DotNetCoreCLI@2
@@ -49,7 +51,8 @@ steps:
     versioningSource: 'userSpecified'
     version: '1.0.0'
     packageVersion: '$(packageVersion)'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
+    arguments: '--output $(Build.ArtifactStagingDirectory) /p:TargetFramework=net8.0'
+    workingDirectory: '$(Build.SourcesDirectory)'
 
 - task: NuGetCommand@2
   displayName: 'Publish NuGet package'
@@ -59,4 +62,4 @@ steps:
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Feed4Lab4'
     allowPackageConflicts: true
-    verbosityPush: 'Detailed' # Helps with debugging
+    verbosityPush: 'Detailed'
