@@ -30,7 +30,7 @@ steps:
   displayName: 'Create NuGet package'
   inputs:
     command: 'pack'
-    projects: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
+    projects: 'StringLibrary/StringLibrary.csproj'
     nobuild: true
     outputDirectory: '$(Build.ArtifactStagingDirectory)'
     versioningSource: 'userSpecified'
