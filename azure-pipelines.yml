@@ -41,4 +41,5 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Feed4Lab4'
+    source: 'https://pkgs.dev.azure.com/iarcecas/Project4Lab4/_packaging/Feed4Lab4/nuget/v3/index.json'
     allowPackageConflicts: true
