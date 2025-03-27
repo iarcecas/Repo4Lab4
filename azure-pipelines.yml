@@ -46,7 +46,8 @@ steps:
     command: 'pack'
     packagesToPack: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
     configuration: '$(buildConfiguration)'
-    versioningScheme: 'byBuildNumber' # Or keep 'userSpecified' if you prefer
+    versioningSource: 'userSpecified'
+    version: '1.0.0'
     packageVersion: '$(packageVersion)'
     outputDir: '$(Build.ArtifactStagingDirectory)'
 
