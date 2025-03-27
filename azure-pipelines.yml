@@ -39,5 +39,4 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    source: 'https://pkgs.dev.azure.com/iarcecas/Project4Lab4/_packaging/Feed4Lab4/nuget/v3/index.json'
-    nuGetFeed: 'Feed4Lab4'
+    apiKey: 'AzureDevOps'
