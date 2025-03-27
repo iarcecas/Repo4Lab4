@@ -2,57 +2,37 @@ trigger:
 - main
 
 pool:
-  name: 'COMP367-Windows'
-
-variables:
-  buildConfiguration: 'Release'
-  majorVersion: '1'
-  minorVersion: '0'
-  patchVersion: '0'
-  versionSuffix: ''
-  packageVersion: '$(majorVersion).$(minorVersion).$(patchVersion)$(versionSuffix)'
-  dotnetVersion: '8.0.100' # Explicitly specify the .NET 8 SDK version
+  name: 'COMP367-Windows' 
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET 8 SDK'
+  displayName: 'Use .NET 8.x'
   inputs:
-    packageType: 'sdk'
-    version: '$(dotnetVersion)'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+    packageType: SDK
+    version: '8.x'
 
 - task: NuGetToolInstaller@1
-  displayName: 'Install NuGet'
-
-- task: NuGetAuthenticate@1
-  displayName: 'Authenticate with Azure Artifacts'
+  displayName: 'Use NuGet'
 
 - task: NuGetCommand@2
   displayName: 'Restore NuGet packages'
   inputs:
     command: 'restore'
     solution: 'Library4Lab4Q1.sln'
-    feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config'
 
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
     solution: 'Library4Lab4Q1.sln'
-    msbuildArgs: '/p:Configuration=$(buildConfiguration) /p:TargetFramework=net8.0'
-    platform: 'Any CPU'
+    msbuildArgs: '/p:Configuration=Release'
 
-- task: DotNetCoreCLI@2
+- task: DotNetCoreCLI@2 # Changed from NuGetCommand@2
   displayName: 'Create NuGet package'
   inputs:
     command: 'pack'
-    packagesToPack: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
-    configuration: '$(buildConfiguration)'
+    projects: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
     versioningSource: 'userSpecified'
     version: '1.0.0'
-    packageVersion: '$(packageVersion)'
-    arguments: '--output $(Build.ArtifactStagingDirectory) /p:TargetFramework=net8.0'
-    workingDirectory: '$(Build.SourcesDirectory)'
 
 - task: NuGetCommand@2
   displayName: 'Publish NuGet package'
@@ -62,4 +42,3 @@ steps:
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Feed4Lab4'
     allowPackageConflicts: true
-    verbosityPush: 'Detailed'
