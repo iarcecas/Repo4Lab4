@@ -26,11 +26,13 @@ steps:
     solution: 'Library4Lab4Q1.sln'
     msbuildArgs: '/p:Configuration=Release'
 
-- task: DotNetCoreCLI@2 # Changed from NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'Create NuGet package'
   inputs:
     command: 'pack'
     projects: 'Library4Lab4Q1/StringLibrary/StringLibrary.csproj'
+    nobuild: true
+    outputDirectory: '$(Build.ArtifactStagingDirectory)'
     versioningSource: 'userSpecified'
     version: '1.0.0'
 
@@ -40,6 +42,5 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'Feed4Lab4'
-    source: 'https://pkgs.dev.azure.com/iarcecas/Project4Lab4/_packaging/Feed4Lab4/nuget/v3/index.json'
+    publishVstsFeed: 'Project4Lab4/Feed4Lab4'
     allowPackageConflicts: true
