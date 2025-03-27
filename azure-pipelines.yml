@@ -39,4 +39,6 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    apiKey: 'AzureDevOps'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'Feed4Lab4'
+    allowPackageConflicts: true
